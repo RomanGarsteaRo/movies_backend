@@ -10,7 +10,7 @@ export class AppController {
 
 
     @Get()
-    getHello(): Promise<any> {
+    getHello(): Observable<any> {
         return this.appService.getHello();
     }
 }
