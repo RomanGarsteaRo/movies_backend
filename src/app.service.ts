@@ -1,46 +1,81 @@
 import { Injectable } from "@nestjs/common";
 import { readdir } from "node:fs/promises";
-import fs from "fs";
+import { readdirSync, stat } from "node:fs";
+
 import * as path from "path";
-import { concat, defer, forkJoin, map, mergeAll, Observable, switchMap } from "rxjs";
+import {
+    catchError,
+    concat,
+    defer,
+    EMPTY,
+    forkJoin,
+    from,
+    map,
+    mergeAll,
+    mergeMap,
+    Observable, of,
+    switchMap,
+    tap
+} from "rxjs";
+import * as fs from "fs";
+import { promisify } from 'util';
+
 
 @Injectable()
 export class AppService {
 
-    // private path: string = '\\\\NAS\\Movies';
-    private path1: string = 'C:\\Git\\media1'  ;
-    private path2: string = 'C:\\Git\\media2'  ;
 
-    getHello(): Observable<any> {
+    private path1: string = '\\\\NAS\\Movies';
+    private path2: string = '\\\\NAS\\MoviesB\\Movis';
+    // private path1: string = 'C:\\Git\\media1';
+    // private path2: string = 'C:\\Git\\media2';
+
+    private statAsync = promisify(stat);
+
+    getHello(): Observable<{id: string, path: string, size: string}[]> {
         // https://stackoverflow.com/questions/39319279/convert-promise-to-observable
         // RxJS wrappers around some of the node fs lib. https://github.com/trxcllnt/rxjs-fs/blob/master/index.js#L41
 
+
         try {
-            // var 1
-            // return defer(() => readdir(this.path));
-
-            // var 2
-            return forkJoin({arr1: readdir(this.path2), arr2: readdir(this.path1)}).pipe(map(ob=> [...ob.arr1, ...ob.arr2]));
-
-
+            return forkJoin({arr1: readdir(this.path1), arr2: readdir(this.path2)}).pipe(
+                map(ob=> [
+                    ...this.addPathToName(ob.arr1, this.path1),
+                    ...this.addPathToName(ob.arr2, this.path2)
+                ]),
+                mergeMap((filePaths: string[]) => {
+                    const fileStatObservables = filePaths.map(filePath =>
+                        from(this.statAsync(filePath)).pipe(
+                            map(fileStat => ({
+                                id: path.basename(filePath),
+                                path: filePath,
+                                size: fileStat.size.toString()
+                            })),
+                            catchError(err => {
+                                console.error(err);
+                                return EMPTY;
+                            })
+                        )
+                    );
+                    return forkJoin(fileStatObservables);
+                }),
+                tap(ob => console.log(ob)),
+                catchError(err => {
+                    console.error(err);
+                    return EMPTY;
+                })
+            );
         } catch (err) {
             console.error(err);
         }
     }
 
-    // private readdir(dir) {
-    //
-    //     return Rx.Observable.create(function(observer) {
-    //
-    //         fs.readdir(dir, cb);
-    //
-    //         function cb(e, files) {
-    //             if(e) files = [];
-    //             files = _.map(files, _.partial(setFullPath, dir));
-    //             observer.onNext(files);
-    //             observer.onCompleted();
-    //         }
-    //     });
-    // };
 
+    public addPathToName (arr: string[], pathToMovies: string): string[] {
+        let arrayOfFiles: string[] = [];
+        arr.forEach((file) => {
+            arrayOfFiles.push(path.join(pathToMovies, file))
+        })
+        return arrayOfFiles
+    }
 }
