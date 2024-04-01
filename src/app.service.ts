@@ -59,7 +59,8 @@ export class AppService {
                     );
                     return forkJoin(fileStatObservables);
                 }),
-                tap(ob => console.log(ob)),
+                map(arr=> arr.filter(item =>item.id !== '#recycle')),
+                tap(ob => console.log(ob[0])),
                 catchError(err => {
                     console.error(err);
                     return EMPTY;
