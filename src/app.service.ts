@@ -27,12 +27,9 @@ export class AppService {
 
     private path1: string = '\\\\NAS\\Movies';
     private path2: string = '\\\\NAS\\MoviesB\\Movis';
-    // private path1: string = 'C:\\Git\\media1';
-    // private path2: string = 'C:\\Git\\media2';
-
     private statAsync = promisify(stat);
 
-    getHello(): Observable<{id: string, path: string, size: string}[]> {
+    getHello(): Observable<{fileName: string, path: string, size: string}[]> {
         // https://stackoverflow.com/questions/39319279/convert-promise-to-observable
         // RxJS wrappers around some of the node fs lib. https://github.com/trxcllnt/rxjs-fs/blob/master/index.js#L41
 
@@ -47,7 +44,7 @@ export class AppService {
                     const fileStatObservables = filePaths.map(filePath =>
                         from(this.statAsync(filePath)).pipe(
                             map(fileStat => ({
-                                id: path.basename(filePath),
+                                fileName: path.basename(filePath),
                                 path: filePath,
                                 size: fileStat.size.toString()
                             })),
@@ -59,8 +56,8 @@ export class AppService {
                     );
                     return forkJoin(fileStatObservables);
                 }),
-                map(arr=> arr.filter(item =>item.id !== '#recycle')),
-                tap(ob => console.log(ob[0])),
+                map(arr=> arr.filter(item =>item.fileName !== '#recycle')),
+                tap(ob => console.log("GET all files -> http://localhost:3000", ob[0])),
                 catchError(err => {
                     console.error(err);
                     return EMPTY;
