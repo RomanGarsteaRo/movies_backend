@@ -10,7 +10,7 @@ async function bootstrap() {
         forbidNonWhitelisted: true, // send error 'this property not exist'
     }));
     app.enableCors({
-        origin: ['http://localhost:4200', 'http://localhost:4455'],
+        origin: ['http://localhost:4200', 'http://localhost:4455',],
         methods: 'GET,POST,PUT,DELETE',
         allowedHeaders: 'Content-Type,Authorization,access-control-allow-origin',
     });

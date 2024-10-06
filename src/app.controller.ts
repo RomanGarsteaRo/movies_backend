@@ -1,6 +1,5 @@
 import { Controller, Get } from "@nestjs/common";
 import { AppService } from "./app.service";
-import { Observable } from "rxjs";
 
 
 /*
@@ -15,8 +14,7 @@ export class AppController {
     constructor(private readonly appService: AppService) {}
 
     @Get()
-    getHello(): Observable<{fileName: string, path: string, size: string}[]> {
-        // console.log('GET 1');
+    getHello(): string {
         return this.appService.getHello();
     }
 }

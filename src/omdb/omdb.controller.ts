@@ -11,7 +11,7 @@ export class OmdbController {
 
     @Get()
     findAll() {
-        console.log('GET all omdb from DB http://localhost:3000/omdb');
+        console.log('### GET all omdb from DB http://localhost:3000/omdb');
         return this.omdbService.findAll();
     }
 
