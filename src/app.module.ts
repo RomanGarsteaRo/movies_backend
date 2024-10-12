@@ -5,6 +5,8 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { FileModule } from './file/file.module';
 import { OmdbModule } from './omdb/omdb.module';
+import { PlayerModule } from './player/player.module';
+
 
 
 @Module({
@@ -22,6 +24,7 @@ import { OmdbModule } from './omdb/omdb.module';
 
         OmdbModule,
         FileModule,
+        PlayerModule,
     ],
     controllers: [AppController],
     providers: [AppService]
