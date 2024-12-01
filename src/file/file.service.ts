@@ -1,14 +1,16 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { promisify } from "util";
 import { stat, rename, unlink } from "node:fs";
-import { catchError, EMPTY, forkJoin, from, map, mergeMap, Observable, of, tap, throwError } from "rxjs";
+import { catchError, EMPTY, filter, forkJoin, from, map, mergeMap, Observable, of, tap, throwError } from "rxjs";
 import { readdir } from "node:fs/promises";
 import * as path from "path";
 import { move } from "fs-extra"; // npm i --save-dev @types/fs-extra
 import { join } from 'path';
 import { promises as fs } from 'fs';
 import * as ffmpeg from 'fluent-ffmpeg';
-import { extname } from 'path'; // Импортируем для проверки расширения файла
+import { extname } from 'path';
+import { IFile, IFileBase } from "./file.interface";
+import { FileUtils } from "./file.utils";
 
 @Injectable()
 export class FileService {
@@ -20,7 +22,7 @@ export class FileService {
     private renameAsync = promisify(rename);
     private deleteAsync = promisify(unlink);
 
-    getAll(): Observable<{ fileName: string, path: string, size: string }[]> {
+    getAll(): Observable<IFile[]> {
         // https://stackoverflow.com/questions/39319279/convert-promise-to-observable
         // RxJS wrappers around some of the node fs lib. https://github.com/trxcllnt/rxjs-fs/blob/master/index.js#L41
 
@@ -34,11 +36,14 @@ export class FileService {
                 mergeMap((filePaths: string[]) => {
                     const fileStatObservables = filePaths.map(filePath =>
                         from(this.statAsync(filePath)).pipe(
-                            map(fileStat => ({
-                                fileName: path.basename(filePath),
-                                path: filePath,
-                                size: fileStat.size.toString()
-                            })),
+                            map(fileStat => {
+                                let fileBase: IFileBase =  {
+                                    basename: path.basename(filePath),
+                                    path: filePath,
+                                    size: fileStat.size
+                                }
+                                return FileUtils.transformToIFile(fileBase);
+                            }),
                             catchError(err => {
                                 console.error(err);
                                 return EMPTY;
@@ -47,7 +52,7 @@ export class FileService {
                     );
                     return forkJoin(fileStatObservables);
                 }),
-                map(arr => arr.filter(item => item.fileName !== "#recycle")),
+                map(arr => arr.filter(item => item.path !== '\\\\NAS\\Movies\\#recycle')),
                 tap(ob => console.log("GET all files -> http://localhost:3000", ob[0])),
                 catchError(err => {
                     console.error(err);

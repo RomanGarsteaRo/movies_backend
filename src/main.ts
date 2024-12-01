@@ -10,11 +10,11 @@ async function bootstrap() {
         forbidNonWhitelisted: true, // send error 'this property not exist'
     }));
     app.enableCors({
-        origin: ['http://localhost:4200', 'http://localhost:4455',],
-        methods: 'GET,POST,PUT,DELETE',
-        allowedHeaders: 'Content-Type,Authorization,access-control-allow-origin',
+        // origin: ['http://localhost:4200', 'http://localhost:4455', 'http://10.0.0.74:3000',],
+        // methods: 'GET,POST,PUT,DELETE',
+        // allowedHeaders: 'Content-Type,Authorization,access-control-allow-origin',
     });
-    await app.listen(3000);
+    await app.listen(3000, '0.0.0.0');
 }
 
 bootstrap();

@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
 import { FileService } from "./file.service";
 import { Observable } from "rxjs";
+import { IFile } from "./file.interface";
 
 @Controller("file")
 export class FileController {
@@ -9,7 +10,7 @@ export class FileController {
 
     // Get all file from all folders
     @Get('all')
-    getAll(): Observable<{ fileName: string, path: string, size: string }[]> {
+    getAll(): Observable<IFile[]> {
         console.log(`### ...movie/all`);
         return this.fileService.getAll();
     }
