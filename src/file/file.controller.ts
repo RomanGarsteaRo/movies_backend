@@ -11,7 +11,7 @@ export class FileController {
     // Get all file from all folders
     @Get('all')
     getAll(): Observable<IFile[]> {
-        console.log(`### ...movie/all`);
+        //console.log(`### ...movie/all`);
         return this.fileService.getAll();
     }
 

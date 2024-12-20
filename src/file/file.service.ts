@@ -53,7 +53,6 @@ export class FileService {
                     return forkJoin(fileStatObservables);
                 }),
                 map(arr => arr.filter(item => item.path !== '\\\\NAS\\Movies\\#recycle')),
-                tap(ob => console.log("GET all files -> http://localhost:3000", ob[0])),
                 catchError(err => {
                     console.error(err);
                     return EMPTY;
