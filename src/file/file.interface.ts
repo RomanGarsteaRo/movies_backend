@@ -1,26 +1,35 @@
-import path from "path";
-
-export interface IFileBase {
-    path: string,
-    basename: string,
-    size: number,
-}
+import { ParsedPath } from "path";
 
 export interface IFile {
-    path: string,
-    size: IFileSize,
+    type: string,           // 'file' | 'directory'
+    children?: IFile[],
 
-    title: string,
-    year: number,
-    tags: string[],
-    format: string,
+    path: string,           // "\\\\NAS\\MoviesB\\TEMP\\A Family Affair (2024) FullHD.mkv"
+    path_p: ParsedPath,           // "\\\\NAS\\MoviesB\\TEMP\\A Family Affair (2024) FullHD.mkv"
+    titl_p: ITitleParse | null,
+
+    size: IFileSize,
+    created: string,
+    modified: string,
+    access: string,
 }
+
+
+export interface ITitleParse {
+
+    title: string,   // "A Family Affair"
+    year: number,    //  2024
+    tags: string[],  // ["FullHD"]
+    format: string,  //  "mkv"
+}
+
 
 export interface IFileSize {
     sizeInByte: number,
     sizeInUnit: number;
     unit: string;
 }
+
 
 export const SizeUnits: { [key: string]: number } = {
     Bytes: 1,

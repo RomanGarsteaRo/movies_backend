@@ -1,22 +1,19 @@
-import { IFile, IFileBase, IFileSize, SizeUnits } from "./file.interface";
+import { IFile, IFileSize, ITitleParse, SizeUnits } from "./file.interface";
 
 
 export class FileUtils{
 
-    // Transform IFileBase to IFile
-    static transformToIFile(fileBase: IFileBase): IFile {
+    // Transform basename to IParse
+    static parseBaseName(basename: string): ITitleParse {
 
-        const match = fileBase.basename.match(/^(.+?)\s\((\d{4})\)/);
+        const match = basename.match(/^(.+?)\s\((\d{4})\)/);
         const title = match?.[1] || '';
         const year: number = parseInt(match?.[2] || '', 10);
-        const tags: string[] = FileUtils.getTagsFromTitle(fileBase.basename);
-        const format = fileBase.basename.match(/(?:\.([^.]+))?$/)?.[1] || '';
+        const tags: string[] = FileUtils.getTagsFromTitle(basename);
+        const format = basename.match(/(?:\.([^.]+))?$/)?.[1] || '';
 
         return {
-            path:     fileBase.path,
-            size:     FileUtils.convertBytesToIFileSize(+fileBase.size),
-
-            title:    title,
+            title,
             year,
             tags,
             format
