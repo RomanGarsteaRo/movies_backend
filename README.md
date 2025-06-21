@@ -1,3 +1,62 @@
+
+
+# Movies Backend
+
+A RESTful backend built with NestJS for managing and storing movie data.  
+This API supports movie operations such as saving, retrieving, updating, and deleting data from a local database.  
+It is designed to work alongside the [Movies Frontend](https://github.com/RomanGarsteaRo/movies_frontend) Angular application.
+
+---
+
+## Features
+
+- Save movies from OMDb to local DB
+- Retrieve all saved movies
+- Update or delete movies by ID
+- Data transformation using custom services
+- Integration with filesystem and Plex API (if configured)
+- Scalable NestJS modular structure
+
+---
+
+## Technologies
+
+- NestJS
+- TypeScript
+- RxJS
+- MongoDB / Mongoose (or replace with your DB)
+- RESTful API
+- Swagger for API docs (optional)
+
+---
+
+### Prerequisites
+- Node.js v18+
+- MongoDB or compatible database (optional)
+
+
+## Clone & Install
+
+git clone https://github.com/RomanGarsteaRo/movies_backend.git
+cd movies_backend
+npm install
+
+
+#
+#
+#
+#
+#
+#
+
+
+
+
+
+
+
+
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
